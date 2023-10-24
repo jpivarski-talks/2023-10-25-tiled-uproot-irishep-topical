@@ -7,7 +7,7 @@
    viewBox="0 0 163.91019 44.13964"
    version="1.1"
    id="svg5"
-   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="finding-seek-positions-2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,14 +25,15 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.2968883"
-     inkscape:cx="243.27462"
-     inkscape:cy="62.457192"
-     inkscape:window-width="1414"
-     inkscape:window-height="790"
+     inkscape:cx="243.66015"
+     inkscape:cy="62.457191"
+     inkscape:window-width="1790"
+     inkscape:window-height="943"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     inkscape:pageshadow="2" />
   <defs
      id="defs2">
     <marker
@@ -240,6 +241,6 @@
          style="stroke-width:0.264583"
          x="144.07596"
          y="111.89174"
-         id="tspan4423">Database of TBasket positions and sizes</tspan></text>
+         id="tspan4423">Database of TBasket positions and sizes?</tspan></text>
   </g>
 </svg>
