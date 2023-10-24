@@ -197,7 +197,35 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{A perfect match for Tiled's slice-based predicate push-down}
+\vspace{0.2 cm}
+\scriptsize
+\begin{minted}{javascript}
+>>> awkward_client
+<AwkwardClient>
 
+>>> awkward_client[0, "offsets"]
+<Array [0, 3271302] type='2 * int64'>   // just one file for now
+
+>>> awkward_client[0, "prefix"]
+<Array ['/home/jpivarski/storage/data/'] type='1 * string'>
+
+>>> awkward_client[0, "file", ["filename", "prefix", "era"]][0].show()
+{filename: 'Run2018D-DoubleMuon-Nano25Oct2019_ver2-v1-974F28EE-0FCE-4940-92B5-870859F880B1.root',
+ prefix: 0,
+ era: 0}
+
+>>> awkward_client[0, "file", "tree", ["nMuon", "Muon_pt", "Muon_eta"]][0].show()
+{nMuon: [{seek: 386614, stop: 1000, bytes: 587}, ..., {seek: 2511484157, ...}],
+ Muon_pt: [{seek: 467837, stop: 1000, bytes: 8305}, ..., {seek: ..., ...}],
+ Muon_eta: [{seek: 405661, stop: 1000, bytes: 6018}, ..., {seek: ..., ...}]}
+
+>>> awkward_client[0, "file", "tree", 0, "nMuon", 100:103].show()
+[{seek: 728247824, stop: 951800, bytes: 3223},
+ {seek: 735505290, stop: 961318, bytes: 3243},
+ {seek: 742659604, stop: 970836, bytes: 3195}]
+\end{minted}
+\end{frame}
 
 
 \end{document}
