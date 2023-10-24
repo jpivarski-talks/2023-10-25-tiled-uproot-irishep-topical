@@ -227,5 +227,125 @@
 \end{minted}
 \end{frame}
 
+\begin{frame}{Prototype: populate Tiled database, Uproot drop-in replacement}
+\vspace{0.2 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\includegraphics[width=\linewidth]{tiled-uproot.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{After populating the database\ldots}
+\vspace{0.32 cm}
+\scriptsize
+\begin{minted}{python}
+>>> tree = tiled_uproot.extract.TiledUproot("root_metadata", awkward_client)
+>>> tree
+<tiled_uproot.extract.TiledUproot object at 0x7fceb06c2d70>
+
+>>> tree.show()
+name                 | typename                 | interpretation                
+---------------------+--------------------------+-------------------------------
+run                  | uint32_t                 | AsDtype('>u4')
+luminosityBlock      | uint32_t                 | AsDtype('>u4')
+event                | uint64_t                 | AsDtype('>u8')
+CaloMET_phi          | float                    | AsDtype('>f4')
+CaloMET_pt           | float                    | AsDtype('>f4')
+CaloMET_sumEt        | float                    | AsDtype('>f4')
+ChsMET_phi           | float                    | AsDtype('>f4')
+ChsMET_pt            | float                    | AsDtype('>f4')
+ChsMET_sumEt         | float                    | AsDtype('>f4')
+nCorrT1METJet        | uint32_t                 | AsDtype('>u4')
+CorrT1METJet_area    | float[]                  | AsJagged(AsDtype('>f4'))
+CorrT1METJet_eta     | float[]                  | AsJagged(AsDtype('>f4'))
+CorrT1METJet_muon... | float[]                  | AsJagged(AsDtype('>f4'))
+CorrT1METJet_phi     | float[]                  | AsJagged(AsDtype('>f4'))
+CorrT1METJet_rawPt   | float[]                  | AsJagged(AsDtype('>f4'))
+nElectron            | uint32_t                 | AsDtype('>u4')
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{After populating the database\ldots}
+\vspace{0.32 cm}
+\scriptsize
+\begin{minted}{python}
+>>> array = tree.arrays(["nMuon", "Muon_pt"], entry_start=100, entry_stop=10000)
+>>> array.show(type=True)
+type: 9900 * {
+    nMuon: uint32,
+    Muon_pt: var * float32
+}
+[{nMuon: 2, Muon_pt: [10.4, 5.3]},
+ {nMuon: 3, Muon_pt: [15.1, 9.15, 5.99]},
+ {nMuon: 1, Muon_pt: [14.8]},
+ {nMuon: 2, Muon_pt: [17.6, 12.9]},
+ {nMuon: 0, Muon_pt: []},
+ {nMuon: 2, Muon_pt: [49, 38.7]},
+ {nMuon: 4, Muon_pt: [15.4, 6.3, ..., 5.15]},
+ {nMuon: 3, Muon_pt: [15.5, 14.5, 12.8]},
+ {nMuon: 1, Muon_pt: [20.1]},
+ {nMuon: 1, Muon_pt: [9.4]},
+ ...,
+ {nMuon: 2, Muon_pt: [19.8, 12.2]},
+ {nMuon: 1, Muon_pt: [3.14]},
+ {nMuon: 1, Muon_pt: [13.1]},
+ {nMuon: 1, Muon_pt: [19.6]},
+ {nMuon: 2, Muon_pt: [17.4, 10.4]},
+ {nMuon: 3, Muon_pt: [9.66, 4.06, 3.85]},
+ {nMuon: 3, Muon_pt: [10.6, 6.78, 5.43]},
+ {nMuon: 2, Muon_pt: [61.7, 11.8]},
+ {nMuon: 2, Muon_pt: [45.1, 31.9]}]
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{After populating the database\ldots}
+\vspace{0.32 cm}
+\scriptsize
+\begin{minted}{python}
+>>> array = tree.arrays(
+...     ["px", "py", "pz"],
+...     cut="nMuon == 2",
+...     aliases={
+...         "px": "Muon_pt * cosh(Muon_eta) * cos(Muon_phi)",
+...         "py": "Muon_pt * cosh(Muon_eta) * sin(Muon_phi)",
+...         "pz": "Muon_pt * sinh(Muon_eta)",
+...     },
+...     entry_start=100,
+...     entry_stop=10000,
+... )
+>>> array.show(type=True)
+type: 4922 * {
+    px: var * float32,
+    py: var * float32,
+    pz: var * float32
+}
+[{px: [-11.3, 1.18], py: [5.23, -5.32], pz: [6.89, ...]},
+ {px: [14.9, 31], py: [10.3, 55.7], pz: [3.93, ...]},
+ {px: [-46.3, 63.8], py: [-19.3, 7.58], pz: [10.5, ...]},
+ {px: [16.3, -36.6], py: [51, -18.5], pz: [20.5, ...]},
+ {px: [27.9, 3.71], py: [40.4, 18.8], pz: [-41.8, ...]},
+ {px: [29.4, 15.1], py: [24.5, 5.01], pz: [-34.2, ...]},
+ {px: [-4.81, 6.34], py: [-3.09, 4.58], pz: [-1.32, ...]},
+ {px: [17.7, -33.3], py: [-46.7, 52.2], pz: [33.5, ...]},
+ {px: [-56.3, -4.2], py: [-19.1, -4.7], pz: [58.2, ...]},
+ {px: [-16, -2.01], py: [26.8, 21.8], pz: [29.8, ...]},
+ ...,
+ {px: [8.14, -17.8], py: [-27.3, 6.53], pz: [13.4, ...]},
+ {px: [-30.8, -20.6], py: [-5.27, -2.15], pz: [7.41, ...]},
+ {px: [30.8, 48.5], py: [-13.2, -4.79], pz: [-28.4, ...]},
+ {px: [103, -20.3], py: [-21.7, 4.21], pz: [103, ...]},
+ {px: [2.5, 11.9], py: [-58.2, 38.9], pz: [-35.2, ...]},
+ {px: [12, -3.35], py: [-55.4, 13.6], pz: [53.1, ...]},
+ {px: [5.19, -16], py: [-16.7, 6.37], pz: [1.09, ...]},
+ {px: [68.4, 13.6], py: [-47.1, -9.65], pz: [55.5, ...]},
+ {px: [16, -6.43], py: [80.4, -31.3], pz: [68.5, ...]}]
+\end{minted}
+\end{frame}
+
+
+
+
+
+
 
 \end{document}
